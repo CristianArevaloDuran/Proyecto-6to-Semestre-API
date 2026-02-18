@@ -3,11 +3,13 @@ import { loadEnvFile } from 'node:process';
 loadEnvFile('./.env');
 const port = process.env.PORT || 3000;
 
+
 // Set express
 import express from 'express';
 
 const app = express();
 app.use(express.json());
+
 
 // Set supabase
 import { createClient } from '@supabase/supabase-js';
@@ -18,7 +20,24 @@ const supabaseKey = process.env.DATABASE_SECRET_KEY;
 const supabase = createClient(supabaseURL, supabaseKey);
 
 
-// Endpoints
+// Set multer
+
+import multer from 'multer';
+
+const uploadImg = multer({
+    storage: multer.memoryStorage()
+})
+
+
+// Set cors
+
+import cors from 'cors';
+
+app.use(cors());
+
+// Endpoints imports
+import upload from './modules/products/upload.js';
+import get from './modules/products/get.js'
 
 app.get('/vitals', (req, res) => {
     res.send('ok');
@@ -26,46 +45,11 @@ app.get('/vitals', (req, res) => {
 
 // Add product endpoint example
 
-app.post('/add', async (req, res) => {
-    const {name, price} = req.body;
-    
-    const {data, error} = await supabase
-        .from('products')
-        .insert([
-            {
-                name: name,
-                price: price
-            }
-        ])
-        .select();
-
-    if(error) {
-        return res.status(500).json({
-            message: error
-        })
-    }
-    
-    res.status(201).json({
-        message: 'Product added',
-        data: data[0]
-    });
-});
+app.post('/upload', uploadImg.single('image'), upload(supabase));
 
 // List products endpoint example
 
-app.get('/products', async (req, res) => {
-    const {data, error} = await supabase
-        .from('products')
-        .select()
-
-    if (error) {
-        return res.status(500).json({
-            message: error
-        })
-    }
-
-    res.status(200).json(data);
-});
+app.get('/products', get(supabase));
 
 app.listen(port, ()=> {
     console.log(`API on port ${port}`);

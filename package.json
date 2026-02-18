@@ -21,9 +21,11 @@
   "homepage": "https://github.com/CristianArevaloDuran/Proyecto-6to-Semestre-API#readme",
   "dependencies": {
     "@supabase/supabase-js": "^2.96.0",
-    "express": "^5.2.1"
+    "cors": "^2.8.6",
+    "express": "^5.2.1",
+    "multer": "^2.0.2"
   },
   "devDependencies": {
-    "nodemon": "^3.1.11"
+    "nodemon": "^1.0.2"
   }
 }
