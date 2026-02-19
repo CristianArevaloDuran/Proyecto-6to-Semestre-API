@@ -1,6 +1,14 @@
 // Set .env variables
 import { loadEnvFile } from 'node:process';
-loadEnvFile('./.env');
+
+if (!process.env.RENDER) {
+    try {
+        loadEnvFile('./.env');
+    } catch (e) {
+        console.log("Archivo .env no encontrado, usando variables de entorno del sistema.");
+    }
+}
+
 const port = process.env.PORT || 3000;
 
 
