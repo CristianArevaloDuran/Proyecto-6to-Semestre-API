@@ -51,7 +51,7 @@ app.post('/upload', uploadImg.single('image'), upload(supabase));
 
 app.get('/products', get(supabase));
 
-app.listen(port, ()=> {
+app.listen(port, '0.0.0.0', ()=> {
     console.log(`API on port ${port}`);
     
 })
