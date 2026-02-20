@@ -40,9 +40,11 @@ const uploadImg = multer({
 
 import cors from 'cors';
 
+const CORS_ORIGIN = process.env.CORS_ORIGIN;
+
 app.use(cors({
     credentials: true,
-    origin: 'http://localhost:3001'
+    origin: CORS_ORIGIN
 }));
 
 // Endpoints imports
