@@ -13,19 +13,18 @@ const port = process.env.PORT || 3000;
 
 
 // Set express
+
 import express from 'express';
+import cookieParser from 'cookie-parser';
 
 const app = express();
 app.use(express.json());
+app.use(cookieParser());
 
 
-// Set supabase
-import { createClient } from '@supabase/supabase-js';
+// Supabase
 
-const supabaseURL = process.env.DATABASE_URL;
-const supabaseKey = process.env.DATABASE_SECRET_KEY;
-
-const supabase = createClient(supabaseURL, supabaseKey);
+import supabase from './db/connect.js';
 
 
 // Set multer
@@ -41,9 +40,33 @@ const uploadImg = multer({
 
 import cors from 'cors';
 
-app.use(cors());
+app.use(cors({
+    credentials: true,
+    origin: 'http://localhost:3001'
+}));
 
 // Endpoints imports
+
+// Auth
+import signUp from './modules/auth/signup.js';
+import signIn from './modules/auth/signin.js';
+import tokenCheck from './middleware/tokenCheck.js';
+import verify from './modules/auth/verify.js';
+
+// Sign Up user
+
+app.post('/signup', signUp(supabase));
+
+// Login
+
+app.post('/login', signIn(supabase));
+
+// Verify token for protected routes in frontend
+
+app.get('/verify-token', verify(supabase));
+
+
+// Products endpoints
 import upload from './modules/products/upload.js';
 import get from './modules/products/get.js'
 
@@ -51,9 +74,10 @@ app.get('/vitals', (req, res) => {
     res.send('ok');
 })
 
+
 // Add product endpoint example
 
-app.post('/upload', uploadImg.single('image'), upload(supabase));
+app.post('/upload', tokenCheck(supabase), uploadImg.single('image'), upload(supabase));
 
 // List products endpoint example
 
