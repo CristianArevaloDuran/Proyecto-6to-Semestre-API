@@ -1,3 +1,16 @@
+import { loadEnvFile } from 'node:process';
+
+if (!process.env.RENDER) {
+    try {
+        loadEnvFile('./.env');
+    } catch (e) {
+        console.log("Archivo .env no encontrado, usando variables de entorno del sistema.");
+    }
+}
+
+const COOKIE_SECURE = process.env.COOKIE_SECURE;
+const COOKIE_SAMESITE = process.env.COOKIE_SAMESITE;
+
 const signIn = (supabase) =>  async (req, res) => {
     
     // User login using Supabase auth
@@ -18,8 +31,8 @@ const signIn = (supabase) =>  async (req, res) => {
     
     res.status(200).cookie('session', signInData.session.access_token, {
         httpOnly: true,
-        secure: false,
-        sameSite: 'lax',
+        secure: COOKIE_SECURE,
+        sameSite: COOKIE_SAMESITE,
         path: '/'
     }).json({
         message: "Logged in",
