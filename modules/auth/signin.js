@@ -20,8 +20,7 @@ const signIn = (supabase) =>  async (req, res) => {
         httpOnly: true,
         secure: false,
         sameSite: 'lax',
-        path: '/',
-        domain: 'localhost'
+        path: '/'
     }).json({
         message: "Logged in",
         user: signInData.user
