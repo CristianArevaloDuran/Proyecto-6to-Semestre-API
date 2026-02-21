@@ -8,7 +8,7 @@ const get = (supabase) => async (req, res) => {
             message: error
         })
     }
-
+    
     res.status(200).json(data);
 };
 
