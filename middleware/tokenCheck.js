@@ -1,12 +1,14 @@
 const tokenCheck = (supabase) => async (req, res, next) => {
-    const token = req.cookies.session;
+    const authHeader = req.headers['authorization'];
     
 
-    if(!token) {
+    if(!authHeader && !authHeader.startsWith('Bearer')) {
         return res.status(401).json({
             message: 'Not Authorized'
         })
     }
+
+    const token = authHeader.split(' ')[1];
 
     const {data, error} = await supabase.auth.getUser(token);
 

@@ -29,14 +29,11 @@ const signIn = (supabase) =>  async (req, res) => {
         })
     }
     
-    res.status(200).cookie('session', signInData.session.access_token, {
-        httpOnly: true,
-        secure: COOKIE_SECURE,
-        sameSite: COOKIE_SAMESITE,
-        path: '/'
-    }).json({
+    res.status(200).json({
         message: "Logged in",
-        user: signInData.user
+        user: signInData.user,
+        token_type: 'Bearer',
+        access_token: signInData.session.access_token
     })
 };
 
